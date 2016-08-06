@@ -1,6 +1,11 @@
 package com.example.ernest.serversockettest;
 
+import android.os.Environment;
+import android.util.Log;
+
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
@@ -20,12 +25,22 @@ public class DownloadThread extends Thread {
     public void run() {
         try {
             InputStream is = socket.getInputStream();
-            /*
-            方法1
-             */
-            String temp = InputStreamTOString(is);
 
-            System.out.println("temp = " + temp);
+            File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() ,"/test.jpg");
+            Log.i("tag", ""+Environment.getExternalStorageDirectory().getAbsolutePath()+"/picture.jpg");
+
+            FileOutputStream out;
+
+            out = new FileOutputStream(file);
+            byte[] date = new byte[650*433];
+            int length = 1;
+            while ((length = is.read(date)) != -1) {
+                out.write(date,0,length);
+            }
+
+            out.flush();
+            out.close();
+            System.out.println("图片传输完毕");
             is.close();
             socket.close();
         } catch (IOException e) {
